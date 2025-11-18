@@ -303,3 +303,4 @@ kendo-ui-license.txt
 keyfile.json
 .puppeteer
 mongodb/backup/
+.idea/

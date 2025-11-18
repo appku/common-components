@@ -1,29 +1,27 @@
-# Welcome!
-Thanks for dropping by.
+# Common Components
+This is a utility library for the AppKu ecosystem which provides prebuilt components that align with [AppKu's UI/UX Standards](https://doki.office.appku/tech/standards/ui-ux).
 
-# Support Help Desk - ♡ Care
-We're here to help. The AppKu team actively manages, triages, and tracks the technical ♡ Care issues about your active
-project, which you can find right here in this repository.
+# Code Documentation
+You can generate a static JSDoc site under the `docs/` path using the command `npm run docs`.
 
-[Click here to view all open ♡ Care issues.](../../issues?q=is%3Aissue+is%3Aopen+label%3A"♡+care")
+# Installing
+```sh
+npm i @appku/common
+```
 
-## Do you want to...
-- 🞻 Suggest a New Idea - Suggest an idea for this project.
-- ♡ Report a Problem - Create a report of a problem you are facing in the project.
-- ⏲ Summarize or Prepare a Meeting - Create a summary or prepare a meeting agenda.
+# Testing
+This project uses `jest` to perform unit tests.
 
-[Click here to get started.](../../issues/new/choose)
+## Running Tests
+Run `npm test` to run jest unit tests.
 
-# Project Tracking
-Anytime you'd like to see how the project is going, it's [available in the projects page](../../projects).
-Some repositories may have multiple projects associated, if so, the "primary" project is the project that has the
-same name as the repository.
+Run `npm run lint` to run ESLint, optionally install the Visual Studio Code ESLint extension to have linting issues show in your "Problems" tab and be highlighted.
 
-## :zap: Energy Usage
-The :zap: energy balance is recorded each billing cycle in the [Custom Properties](../../custom-properties)
-of this project.
+If you are writing unit tests, you may need to `npm install @types/jest` to get intellisense in Visual Studio Code if for some reason it did not get installed.
 
-Additionally, claims of :zap: energy in issue comments are automatically calculated and added to the issue's project 
-record (if any). These calculated values are periodically set and should not be changed manually, as they will get
-overwritten. Each issue's total claim may span multiple billing periods, but represent a holistic total of the :zap:
-energy claimed for that particular effort.
+# Publishing
+Only maintainers with proper access can publish this package to npm. To do so as maintainers, you can publish by running the following command:
+
+```sh
+npm publish --registry=https://registry.npmjs.org --access=public
+```
