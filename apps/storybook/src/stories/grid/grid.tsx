@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
     type ColumnFiltersState,
     type ColumnOrderState,
@@ -17,106 +17,41 @@ import {
     useReactTable,
     type VisibilityState,
 } from '@tanstack/react-table';
-import { useVirtualizer } from '@tanstack/react-virtual';
-import { ChevronDown, ChevronRight, Download, Filter, GripHorizontal } from 'lucide-react';
+import {useVirtualizer} from '@tanstack/react-virtual';
+import {ChevronDown, ChevronRight, Download, Filter, GripHorizontal} from 'lucide-react';
+
+// Sub-components & Utils
+import {DebouncedInput} from './debounced-input';
+import {downloadCsvFile, generateCsvFromTable} from './export-utils';
+import type {GridProps} from './types';
 import "./grid.css";
 
-// --- Utility Components ---
-
-function DebouncedInput({
-                            value: initialValue,
-                            onChange,
-                            debounce = 500,
-                            ...props
-                        }: {
-    value: string | number;
-    onChange: (value: string | number) => void;
-    debounce?: number;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
-    const [value, setValue] = useState(initialValue);
-
-    useEffect(() => {
-        setValue(initialValue);
-    }, [initialValue]);
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            onChange(value);
-        }, debounce);
-
-        return () => clearTimeout(timeout);
-    }, [value, debounce, onChange]);
-
-    return (
-        <input {...props} value={value} onChange={e => setValue(e.target.value)} />
-    );
-}
-
-// --- Main Component ---
-
-interface GridProps<TData extends Record<string, any>> {
-    data: TData[];
-    columns: any[];
-    getRowId?: (row: TData) => string;
-    loading?: boolean;
-    error?: string | React.ReactNode;
-
-    // Pagination
-    paginationMode?: 'client' | 'server';
-    page?: number;
-    pageSize?: number;
-    rowCount?: number;
-    onPageChange?: (page: number) => void;
-    onPageSizeChange?: (pageSize: number) => void;
-
-    // Selection
-    selectionUnit?: 'row' | 'cell' | 'mixed';
-    rowSelectionMode?: 'none' | 'single' | 'multiple';
-    selectedRowIds?: string[];
-    onRowSelectionChange?: (ids: string[], rows: TData[]) => void;
-
-    // Editing
-    editable?: boolean;
-    onCellEditCommit?: (params: any) => void;
-
-    // Grouping
-    groupBy?: string[];
-
-    // Layout & Styling
-    height?: string | number;
-    className?: string;
-    gridLines?: 'none' | 'horizontal' | 'vertical' | 'both'; // NEW
-    striped?: boolean; // NEW
-
-    // Export
-    onExportRequest?: (format: 'csv' | 'excel') => void;
-}
-
-function Grid<TData extends Record<string, any>>({
-                                                     data,
-                                                     columns,
-                                                     getRowId,
-                                                     loading = false,
-                                                     error,
-                                                     paginationMode = 'client',
-                                                     page: controlledPage,
-                                                     pageSize: controlledPageSize = 10,
-                                                     rowCount,
-                                                     onPageChange,
-                                                     onPageSizeChange,
-                                                     selectionUnit = 'row',
-                                                     rowSelectionMode = 'multiple',
-                                                     selectedRowIds,
-                                                     onRowSelectionChange,
-                                                     editable = false,
-                                                     onCellEditCommit,
-                                                     groupBy = [],
-                                                     height = '600px',
-                                                     className = '',
-                                                     gridLines = 'horizontal', // Default
-                                                     striped = false,
-                                                     onExportRequest,
-                                                 }: GridProps<TData>) {
+function Grid<TData extends Record<string, any>>(
+    {
+        data,
+        columns,
+        getRowId,
+        loading = false,
+        error,
+        paginationMode = 'client',
+        page: controlledPage,
+        pageSize: controlledPageSize = 10,
+        rowCount,
+        onPageChange,
+        onPageSizeChange,
+        selectionUnit = 'row',
+        rowSelectionMode = 'multiple',
+        selectedRowIds,
+        onRowSelectionChange,
+        editable = false,
+        onCellEditCommit,
+        groupBy = [],
+        height = '600px',
+        className = '',
+        gridLines = 'horizontal',
+        striped = false,
+        onExportRequest,
+    }: GridProps<TData>) {
     // --- State Management ---
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -188,7 +123,7 @@ function Grid<TData extends Record<string, any>>({
 
     // --- Virtualization ---
     const parentRef = useRef<HTMLDivElement>(null);
-    const { rows } = table.getRowModel();
+    const {rows} = table.getRowModel();
 
     const rowVirtualizer = useVirtualizer({
         count: rows.length,
@@ -201,7 +136,9 @@ function Grid<TData extends Record<string, any>>({
     useEffect(() => {
         if (selectedRowIds) {
             const newSelection: RowSelectionState = {};
-            selectedRowIds.forEach(id => { newSelection[id] = true; });
+            selectedRowIds.forEach(id => {
+                newSelection[id] = true;
+            });
             setRowSelection(prev => {
                 const isSame = Object.keys(prev).length === selectedRowIds.length &&
                     selectedRowIds.every(id => prev[id]);
@@ -219,16 +156,14 @@ function Grid<TData extends Record<string, any>>({
     };
 
     const onDragOver = (e: React.DragEvent, columnId: string) => {
-        e.preventDefault(); // Allow drop
-        // Only update state if different to prevent excessive renders
+        e.preventDefault();
         if (dragOverTarget !== columnId) {
             setDragOverTarget(columnId);
         }
     };
 
-    const onDragLeave = (e: React.DragEvent) => {
-        // Optional: Clear target if leaving the table header area entirely
-        // Hard to do perfectly with child elements, so usually relying on Drop/End is safer
+    const onDragLeave = () => {
+        // No-op
     };
 
     const onDrop = (e: React.DragEvent, targetColumnId: string) => {
@@ -249,16 +184,13 @@ function Grid<TData extends Record<string, any>>({
                 setColumnOrder(currentOrder);
             }
         }
-        // Reset state
         draggingColumn.current = null;
         setDragOverTarget(null);
     };
 
-    // Helper to determine visual drop side
     const getDropIndicatorClass = (columnId: string) => {
         if (!draggingColumn.current || !dragOverTarget || dragOverTarget !== columnId) return '';
 
-        // We need to check indices to decide if we are dropping "before" (left) or "after" (right)
         const currentOrder = table.getState().columnOrder.length > 0
             ? table.getState().columnOrder
             : table.getVisibleLeafColumns().map(c => c.id);
@@ -267,12 +199,8 @@ function Grid<TData extends Record<string, any>>({
         const targetIndex = currentOrder.indexOf(columnId);
 
         if (draggedIndex === -1 || targetIndex === -1) return '';
-
-        // If moving Right (0 -> 2), the drop target (2) should show indicator on the Right
-        // If moving Left (2 -> 0), the drop target (0) should show indicator on the Left
         return draggedIndex < targetIndex ? 'drop-target-right' : 'drop-target-left';
     };
-
 
     // --- Export ---
     const handleExport = (format: 'csv' | 'excel') => {
@@ -281,38 +209,25 @@ function Grid<TData extends Record<string, any>>({
             return;
         }
         if (format === 'csv') {
-            const headers = table.getVisibleLeafColumns().map(col => col.columnDef.header as string);
-            const rows = table.getRowModel().rows.map(row =>
-                table.getVisibleLeafColumns().map(col => {
-                    const value = row.getValue(col.id);
-                    return typeof value === 'string' && value.includes(',') ? `"${value}"` : value;
-                })
-            );
-            const csv = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = 'export.csv'; a.click();
-            URL.revokeObjectURL(url);
+            const csvContent = generateCsvFromTable(table);
+            downloadCsvFile(csvContent, 'export.csv');
         }
     };
 
     // --- Editing ---
     const startEditing = (rowId: string, columnId: string) => {
-        if (editable) setEditingCell({ rowId, columnId });
+        if (editable) setEditingCell({rowId, columnId});
     };
 
     const commitEdit = (rowId: string, columnId: string, value: any) => {
-        onCellEditCommit?.({ rowId, columnId, value });
+        onCellEditCommit?.({rowId, columnId, value});
         setEditingCell(null);
     };
 
-    // Class generation for grid lines
     const gridLineClass = `grid-lines-${gridLines}`;
     const stripedClass = striped ? 'grid-striped' : '';
-
     return (
-        <div className={`grid-container ${className}`} style={{ height }}>
+        <div className={`grid-container ${className}`} style={{height}}>
             {/* Toolbar */}
             <div className="grid-toolbar">
                 <div className="toolbar-left">
@@ -320,11 +235,12 @@ function Grid<TData extends Record<string, any>>({
                     {loading && <span className="loading-indicator">Loading...</span>}
                 </div>
                 <div className="toolbar-right">
-                    <button className={`toolbar-btn ${showFilters ? 'active' : ''}`} onClick={() => setShowFilters(!showFilters)} title="Toggle filters">
-                        <Filter size={16} />
+                    <button className={`toolbar-btn ${showFilters ? 'active' : ''}`}
+                            onClick={() => setShowFilters(!showFilters)} title="Toggle filters">
+                        <Filter size={16}/>
                     </button>
                     <button className="toolbar-btn" onClick={() => handleExport('csv')} title="Export to CSV">
-                        <Download size={16} />
+                        <Download size={16}/>
                     </button>
                 </div>
             </div>
@@ -337,12 +253,13 @@ function Grid<TData extends Record<string, any>>({
                     {/* Header */}
                     <div className="grid-header-group">
                         {table.getHeaderGroups().map(headerGroup => (
-                            <div key={headerGroup.id} className="grid-header-row" style={{ display: 'flex', width: '100%' }}>
+                            <div key={headerGroup.id} className="grid-header-row"
+                                 style={{display: 'flex', width: '100%'}}>
                                 {headerGroup.headers.map(header => (
                                     <div
                                         key={header.id}
                                         className={`grid-header-cell ${header.column.getCanSort() ? 'sortable' : ''} ${getDropIndicatorClass(header.column.id)}`}
-                                        style={{ width: header.getSize(), display: 'flex' }}
+                                        style={{width: header.getSize(), display: 'flex'}}
                                         draggable={!header.column.getIsPinned() && header.column.id !== 'select'}
                                         onDragStart={(e) => onDragStart(e, header.column.id)}
                                         onDragOver={(e) => onDragOver(e, header.column.id)}
@@ -353,7 +270,7 @@ function Grid<TData extends Record<string, any>>({
                                             <div className="header-content">
                                                 <div className="header-top-row">
                                                     {header.column.id !== 'select' && (
-                                                        <GripHorizontal size={14} className="drag-handle" />
+                                                        <GripHorizontal size={14} className="drag-handle"/>
                                                     )}
                                                     <div
                                                         className="header-label"
@@ -425,7 +342,11 @@ function Grid<TData extends Record<string, any>>({
                                             <div
                                                 key={cell.id}
                                                 className="grid-cell"
-                                                style={{ width: cell.column.getSize(), display: 'flex', alignItems: 'center' }}
+                                                style={{
+                                                    width: cell.column.getSize(),
+                                                    display: 'flex',
+                                                    alignItems: 'center'
+                                                }}
                                                 onDoubleClick={() => {
                                                     // @ts-ignore
                                                     if (editable && cell.column.columnDef.meta?.editable !== false) {
@@ -442,7 +363,8 @@ function Grid<TData extends Record<string, any>>({
                                                             }}
                                                             className="expand-btn"
                                                         >
-                                                            {row.getIsExpanded() ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                                                            {row.getIsExpanded() ? <ChevronDown size={16}/> :
+                                                                <ChevronRight size={16}/>}
                                                         </button>
                                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                         ({row.subRows.length})
@@ -484,9 +406,14 @@ function Grid<TData extends Record<string, any>>({
                     )}
                 </div>
                 <div className="pagination-controls">
-                    <button className="pagination-btn" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>Previous</button>
-                    <span className="pagination-page">Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}</span>
-                    <button className="pagination-btn" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>Next</button>
+                    <button className="pagination-btn" onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}>Previous
+                    </button>
+                    <span
+                        className="pagination-page">Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}</span>
+                    <button className="pagination-btn" onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}>Next
+                    </button>
                     <select
                         value={table.getState().pagination.pageSize}
                         onChange={(e) => {

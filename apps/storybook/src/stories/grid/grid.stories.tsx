@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import Grid from './Grid';
+import Grid from './grid.tsx';
 
 // Added IndeterminateCheckbox component
 function IndeterminateCheckbox(
