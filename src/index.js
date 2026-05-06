@@ -31,13 +31,6 @@ export {
     notification
 } from 'antd';
 
-export {
-    AllCommunityModule,
-    ModuleRegistry
-} from 'ag-grid-community';
-
-export { AgGridReact } from 'ag-grid-react';
-
 export { AppKuProvider } from './components/AppKuProvider.jsx';
 export { AppKuEditableGrid } from './components/grid/AppKuEditableGrid.jsx';
 export { AppKuSelect } from './components/forms/AppKuSelect.jsx';

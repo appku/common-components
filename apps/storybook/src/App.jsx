@@ -13,6 +13,7 @@ import {
     Toolbar,
     appKuToaster
 } from 'appku-common-components';
+import 'appku-common-components/grid.css';
 import 'appku-common-components/styles.css';
 import { useState } from 'react';
 

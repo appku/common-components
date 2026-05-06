@@ -1,7 +1,19 @@
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 
-ModuleRegistry.registerModules([ AllCommunityModule ]);
+let modulesRegistered = false;
+
+/**
+ * Registers AG Grid modules once when the editable grid is used.
+ */
+function ensureGridModules () {
+    if (modulesRegistered) {
+        return;
+    }
+
+    ModuleRegistry.registerModules([ AllCommunityModule ]);
+    modulesRegistered = true;
+}
 
 /**
  * Renders an editable spreadsheet-style data grid.
@@ -16,6 +28,8 @@ export function AppKuEditableGrid ({
     theme = 'ag-theme-quartz',
     ...props
 }) {
+    ensureGridModules();
+
     const classes = [
         'appku-sheet-grid',
         theme,

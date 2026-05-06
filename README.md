@@ -26,6 +26,12 @@ import {
 import 'appku-common-components/styles.css';
 ```
 
+Import grid styles only for screens that render `AppKuEditableGrid` or `AppKuWorkbook`:
+
+```jsx
+import 'appku-common-components/grid.css';
+```
+
 Do not import from `apps/storybook/src/*`; Storybook files are examples and prototypes.
 
 ## Stack

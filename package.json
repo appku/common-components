@@ -10,10 +10,12 @@
             "import": "./dist/index.js",
             "require": "./dist/index.cjs"
         },
+        "./grid.css": "./src/styles/grid.css",
         "./styles.css": "./dist/styles.css"
     },
     "files": [
-        "dist"
+        "dist",
+        "src/styles/grid.css"
     ],
     "sideEffects": [
         "**/*.css"
