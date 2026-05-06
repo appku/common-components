@@ -1,4 +1,4 @@
-import { Spin } from 'antd';
+import Spin from 'antd/es/spin';
 
 /**
  * Renders a shared loading indicator for blocking or inline states.

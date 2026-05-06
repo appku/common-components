@@ -1,4 +1,4 @@
-import { Select } from 'antd';
+import Select from 'antd/es/select';
 
 /**
  * Converts a primitive or object item into an Ant Design select option.

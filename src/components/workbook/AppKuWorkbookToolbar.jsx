@@ -1,5 +1,6 @@
 import { DownloadOutlined } from '@ant-design/icons';
-import { Button, Space } from 'antd';
+import Button from 'antd/es/button';
+import Space from 'antd/es/space';
 
 import { downloadSheetCsv, downloadWorkbookXlsx } from './export.js';
 

@@ -1,4 +1,4 @@
-import { message } from 'antd';
+import message from 'antd/es/message';
 
 const messageByKind = {
     error: 'error',

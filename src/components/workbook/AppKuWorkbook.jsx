@@ -1,4 +1,4 @@
-import { Tabs } from 'antd';
+import Tabs from 'antd/es/tabs';
 import { useMemo, useState } from 'react';
 
 import { AppKuEditableGrid } from '../grid/AppKuEditableGrid.jsx';

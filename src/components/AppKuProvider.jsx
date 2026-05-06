@@ -1,4 +1,4 @@
-import { ConfigProvider } from 'antd';
+import ConfigProvider from 'antd/es/config-provider';
 
 import '../styles/styles.css';
 

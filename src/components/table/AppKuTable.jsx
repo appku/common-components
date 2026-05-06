@@ -1,4 +1,4 @@
-import { Table } from 'antd';
+import Table from 'antd/es/table';
 
 /**
  * Renders the standard AppKu display table.
