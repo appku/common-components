@@ -1,27 +1,61 @@
-# Common Components
-This is a utility library for the AppKu ecosystem which provides prebuilt components that align with [AppKu's UI/UX Standards](https://doki.office.appku/tech/standards/ui-ux).
+# AppKu Common Components
 
-# Code Documentation
-You can generate a static JSDoc site under the `docs/` path using the command `npm run docs`.
+Shared React components for AppKu applications.
 
-# Installing
-```sh
-npm i @appku/common
+## Usage
+
+Until this package is published to npm, consume the production branch as a Git dependency:
+
+```json
+{
+    "dependencies": {
+        "appku-common-components": "git+https://github.com/appku/common-components.git#production"
+    }
+}
 ```
 
-# Testing
-This project uses `jest` to perform unit tests.
+Import the public package entrypoint and styles:
 
-## Running Tests
-Run `npm test` to run jest unit tests.
+```jsx
+import {
+    AppKuProvider,
+    AppKuTable,
+    AppKuEditableGrid,
+    Button
+} from 'appku-common-components';
+import 'appku-common-components/styles.css';
+```
 
-Run `npm run lint` to run ESLint, optionally install the Visual Studio Code ESLint extension to have linting issues show in your "Problems" tab and be highlighted.
+Do not import from `apps/storybook/src/*`; Storybook files are examples and prototypes.
 
-If you are writing unit tests, you may need to `npm install @types/jest` to get intellisense in Visual Studio Code if for some reason it did not get installed.
+## Stack
 
-# Publishing
-Only maintainers with proper access can publish this package to npm. To do so as maintainers, you can publish by running the following command:
+- ESM JavaScript and JSX for AppKu-owned code.
+- React 19.
+- Vite library build.
+- Ant Design v6 for standard UI and mostly-display tables.
+- AG Grid Community for heavy editable spreadsheet-style grids.
 
-```sh
-npm publish --registry=https://registry.npmjs.org --access=public
+## Grid Guidance
+
+- Use `AppKuTable` for read-heavy operational tables: sorting, filtering, pagination, row selection, fixed columns, expandable rows, and action menus.
+- Use `AppKuEditableGrid` for spreadsheet-like data entry: cell editing, copy/paste from Excel or Google Sheets, row insertion/deletion, and keyboard-heavy workflows.
+- Use `AppKuWorkbook` when a workflow needs multiple grid-backed sheets in tabs plus toolbar export.
+- `AppKuWorkbook` exports the active sheet as CSV and all sheets as XLSX through the MIT-licensed `exceljs` package.
+
+## Scripts
+
+```bash
+npm install
+npm run check
+```
+
+The Git dependency uses `prepare` to build `dist/` during installation.
+
+Storybook/Vite smoke app:
+
+```bash
+cd apps/storybook
+npm install
+npm run build
 ```
