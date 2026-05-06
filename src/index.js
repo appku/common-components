@@ -29,6 +29,8 @@ export { default as Upload } from 'antd/es/upload';
 export { default as message } from 'antd/es/message';
 export { default as notification } from 'antd/es/notification';
 
+export { AppKuButton } from './components/actions/AppKuButton.jsx';
+export { AppKuCard } from './components/surface/AppKuCard.jsx';
 export { AppKuProvider } from './components/AppKuProvider.jsx';
 export { AppKuEditableGrid } from './components/grid/AppKuEditableGrid.jsx';
 export { AppKuSelect } from './components/forms/AppKuSelect.jsx';

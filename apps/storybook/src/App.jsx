@@ -1,11 +1,11 @@
 import {
     AppKuEditableGrid,
+    AppKuButton,
+    AppKuCard,
     AppKuProvider,
     AppKuSelect,
     AppKuTable,
     AppKuWorkbook,
-    Button,
-    Card,
     FormRow,
     Input,
     LoadingOverlay,
@@ -119,21 +119,21 @@ function App () {
             <PageShell
                 title="AppKu Components"
                 actions={(
-                    <Button
+                    <AppKuButton
                         type="primary"
                         onClick={() => appKuToaster.show('Ant Design and editable grid components are wired.', 'success')}
                     >
                         Toast
-                    </Button>
+                    </AppKuButton>
                 )}
             >
                 <Toolbar
-                    start={<Button type="primary">Create</Button>}
+                    start={<AppKuButton type="primary">Create</AppKuButton>}
                     end={<Input.Search placeholder="Search components" />}
                 />
 
                 <div className="storybook-grid">
-                    <Card>
+                    <AppKuCard>
                         <h2>Form Controls</h2>
                         <FormRow label="Environment">
                             <AppKuSelect
@@ -144,41 +144,41 @@ function App () {
                                 onChange={() => {}}
                             />
                         </FormRow>
-                    </Card>
+                    </AppKuCard>
 
-                    <Card>
+                    <AppKuCard>
                         <h2>States</h2>
                         <div className="storybook-state-box">
                             <LoadingOverlay inline label="Loading preview" />
                         </div>
-                    </Card>
+                    </AppKuCard>
 
-                    <Card className="storybook-wide">
+                    <AppKuCard className="storybook-wide">
                         <h2>Display Table</h2>
                         <AppKuTable
                             columns={tableColumns}
                             dataSource={tableRows}
                             pagination={false}
                         />
-                    </Card>
+                    </AppKuCard>
 
-                    <Card className="storybook-wide">
+                    <AppKuCard className="storybook-wide">
                         <h2>Editable Sheet Grid</h2>
                         <AppKuEditableGrid
                             rowData={rows}
                             columnDefs={sheetColumnDefs}
                             onCellValueChanged={handleGridChange}
                         />
-                    </Card>
+                    </AppKuCard>
 
-                    <Card className="storybook-wide">
+                    <AppKuCard className="storybook-wide">
                         <h2>Workbook</h2>
                         <AppKuWorkbook
                             fileName="appku-workbook"
                             sheets={workbookSheets}
                             onSheetsChange={setWorkbookSheets}
                         />
-                    </Card>
+                    </AppKuCard>
                 </div>
             </PageShell>
         </AppKuProvider>

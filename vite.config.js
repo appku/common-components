@@ -25,14 +25,17 @@ export default defineConfig({
         lib: {
             entry: 'src/index.js',
             cssFileName: 'styles',
-            formats: [
-                'es',
-                'cjs'
-            ],
-            fileName: (format) => format === 'es' ? 'index.js' : 'index.cjs'
+            formats: [ 'es' ],
+            fileName: 'index'
         },
         rollupOptions: {
-            external: isExternal
+            external: isExternal,
+            output: {
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
+                preserveModules: true,
+                preserveModulesRoot: 'src'
+            }
         },
         sourcemap: true
     }

@@ -21,9 +21,17 @@ import {
     AppKuProvider,
     AppKuTable,
     AppKuEditableGrid,
-    Button
+    AppKuButton
 } from 'appku-common-components';
 import 'appku-common-components/styles.css';
+```
+
+Generated starters use lightweight subpath imports for first-screen controls:
+
+```jsx
+import { AppKuButton } from 'appku-common-components/button';
+import { AppKuCard } from 'appku-common-components/card';
+import { AppKuProvider } from 'appku-common-components/provider';
 ```
 
 Import grid styles only for screens that render `AppKuEditableGrid` or `AppKuWorkbook`:

@@ -3,14 +3,15 @@
     "version": "0.1.0",
     "private": true,
     "type": "module",
-    "main": "./dist/index.cjs",
     "module": "./dist/index.js",
     "exports": {
         ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs"
+            "import": "./dist/index.js"
         },
+        "./button": "./dist/components/actions/AppKuButton.js",
+        "./card": "./dist/components/surface/AppKuCard.js",
         "./grid.css": "./src/styles/grid.css",
+        "./provider": "./dist/components/AppKuProvider.js",
         "./styles.css": "./dist/styles.css"
     },
     "files": [
